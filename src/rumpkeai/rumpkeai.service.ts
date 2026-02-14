@@ -27,7 +27,11 @@ export class RumpkeaiService {
     const { captchaToken, ...formData } = createTipFormDto;
     const isValid = await this.captchaService.verify(captchaToken);
     if (!isValid) {
-      throw new Error('Captcha validation failed');
+      throw new (require('@nestjs/common').HttpException)({
+        code: 'INVALID_CAPTCHA',
+        message: 'Captcha validation failed',
+        details: {}
+      }, 400);
     }
 
     const tipForm = await this.prisma.tipForm.create({

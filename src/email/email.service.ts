@@ -33,7 +33,11 @@ export class EmailService {
     try {
       await sgMail.send(msg);
     } catch (error) {
-      throw new InternalServerErrorException('Failed to send email', error?.toString?.());
+      throw new InternalServerErrorException({
+        code: 'EMAIL_SEND_ERROR',
+        message: 'Failed to send email',
+        details: { error: error?.toString?.() }
+      });
     }
   }
 }

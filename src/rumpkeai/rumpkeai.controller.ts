@@ -34,8 +34,12 @@ export class RumpkeaiController {
     try {
       await this.rumpkeaiService.countTips();
       dbStatus = 'ok';
-    } catch {
-      dbStatus = 'error';
+    } catch (e) {
+      throw new (require('@nestjs/common').HttpException)({
+        code: 'DB_CONNECTION_ERROR',
+        message: 'Database connection failed',
+        details: { error: e?.toString?.() }
+      }, 500);
     }
     return {
       status: 'ok',

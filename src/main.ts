@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { json } from 'express';
 
 async function rumpke() {
@@ -22,6 +23,9 @@ async function rumpke() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+
+  // Registrar filtro global de errores
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -24,7 +24,6 @@ async function rumpke() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // Registrar filtro global de errores
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);

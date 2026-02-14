@@ -1,69 +1,125 @@
-
 # Rumpke AI Backend
 
-Backend for the "Ich schenk dir was" program by Rumpke Immobilien. This service exposes a NestJS-based API to manage the Tippgeber (real estate referral) program, integrating form validation, captcha protection, and automated responses via OpenAI.
-
-## Table of Contents
-- [Description](#description)
-- [Technologies](#technologies)
-- [Project Structure](#project-structure)
-- [Installation & Usage](#installation--usage)
-- [Environment Variables](#environment-variables)
-- [Available Scripts](#available-scripts)
-- [License](#license)
+Backend for the "Ich schenk dir was" program by Rumpke Immobilien. This service exposes a NestJS-based API to manage the Tippgeber (real estate referral) program, integrating form validation, captcha protection, structured error handling, and automated responses via OpenAI.
 
 ## Description
-This backend manages the flow of real estate referrals (tipps) for Rumpke Immobilien. It allows you to:
+
+This backend manages the flow of real estate referrals (tipps) for Rumpke Immobilien.
+
+It allows you to:
+
 - Register referral forms (tip-form)
 - Validate captchas to prevent spam
 - Query the number of referrals
+- Send transactional emails
 - Answer frequently asked questions about the program using OpenAI
+- Provide standardized API responses with structured error handling
+
+## Architecture Overview
+
+The backend follows a modular NestJS architecture:
+
+- Modular service separation (captcha, email, AI, business logic)
+- Prisma ORM for database access
+- Centralized error handling
+- Environment-based configuration
+- Health endpoint for monitoring
+
+**Production Health Endpoint:**
+
+https://api.ichschenkedirwas.de/
+
+## API Design & Error Handling
+
+The API uses a consistent structured error response format:
+
+```
+{
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "Email is invalid",
+    "details": {}
+  }
+}
+```
+
+**Features:**
+
+- Centralized HTTP exception filter
+- Standardized error codes
+- Predictable response structure
+- Separation between validation errors and internal errors
+
+This ensures production-level API consistency and maintainability.
 
 ## Technologies
-- [NestJS](https://nestjs.com/) (Node.js framework)
-- [Prisma ORM](https://www.prisma.io/) (PostgreSQL)
-- [OpenAI API](https://platform.openai.com/)
-- [Nodemailer](https://nodemailer.com/) (for emails)
-- [TypeScript](https://www.typescriptlang.org/)
+
+- NestJS (Node.js framework)
+- Prisma ORM (PostgreSQL)
+- OpenAI API
+- Nodemailer (email service)
+- TypeScript
+- class-validator
+- Cloudflare Turnstile (Captcha validation)
+
+## Security & Protection
+
+- Captcha validation (Cloudflare Turnstile)
+- Honeypot spam detection
+- Input validation & sanitization
+- CORS restrictions
+- Rate limiting
+- Environment variable isolation
+- Structured error responses
 
 ## Project Structure
+
 ```
 src/
-	app.module.ts           # Main module
-	main.ts                 # App bootstrap
-	captcha/                # Captcha validation service
-	email/                  # Email sending service
-	prisma/                 # Database access module and service
-	rumpkeai/               # Tippgeber program logic
-		dtos/                 # DTO definitions
-		use-case/             # Use cases (OpenAI, business logic)
+  app.module.ts
+  main.ts
+  captcha/
+  email/
+  prisma/
+  rumpkeai/
+    dtos/
+    use-case/
 prisma/
-	schema.prisma           # Database schema
-	migrations/             # SQL migrations
+  schema.prisma
+  migrations/
 ```
 
 ## Installation & Usage
-1. Clone the repository:
-	 ```bash
-	 git clone <REPO_URL>
-	 cd rumpke-ai
-	 ```
-2. Install dependencies:
-	 ```bash
-	 npm install
-	 ```
-3. Create the `.env` file based on `.env.template` and configure the required variables.
-4. Run the database migrations (if using Prisma):
-	 ```bash
-	 npx prisma migrate dev --name init
-	 ```
-5. Start the server in development mode:
-	 ```bash
-	 npm run start:dev
-	 ```
+
+Clone the repository:
+
+```
+git clone <REPO_URL>
+cd rumpke-ai
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Create the `.env` file based on `.env.template` and configure required variables.
+
+Run database migrations:
+
+```
+npx prisma migrate dev --name init
+```
+
+Start the server:
+
+```
+npm run start:dev
+```
 
 ## Environment Variables
-Example of required variables:
+
 ```
 DATABASE_URL=postgresql://user:password@localhost:5432/rumpke
 OPENAI_API_KEY=sk-...
@@ -71,12 +127,23 @@ EMAIL_USER=...
 EMAIL_PASS=...
 ```
 
+Never commit secrets.
+
+## Observability & Monitoring
+
+- Health endpoint for uptime monitoring
+- Structured logging
+- Centralized error handling
+- Production-ready deployment environment
+
 ## Available Scripts
-- `npm run start:dev`   - Start the server in development mode
-- `npm run build`       - Build the project
-- `npm run test`        - Run tests
-- `npm run lint`        - Lint with ESLint
-- `npx prisma studio`   - Visual interface for the database
+
+- `npm run start:dev` – Start development server
+- `npm run build` – Build project
+- `npm run test` – Run tests
+- `npm run lint` – Run ESLint
+- `npx prisma studio` – Database interface
 
 ## License
+
 This project is private and has no distribution license.

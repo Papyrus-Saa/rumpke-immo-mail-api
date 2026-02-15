@@ -9,11 +9,6 @@ async function rumpke() {
   app.use(json());
 
 
-
-  // ValidationPipe temporarily removed for debugging body parsing
-
-
-
   app.enableCors({
     origin: [
       'https://ichschenkedirwas.de',

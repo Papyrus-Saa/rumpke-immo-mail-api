@@ -8,7 +8,6 @@ async function rumpke() {
   const app = await NestFactory.create(AppModule);
   app.use(json());
 
-
   app.enableCors({
     origin: [
       'https://ichschenkedirwas.de',
